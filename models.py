@@ -38,19 +38,19 @@ db.define_table('checklists',
             )
 
 if db(db.species).isempty():
-    with open('species.csv', 'r') as f:
+    with open('./data/species.csv', 'r') as f:
         reader = csv.reader(f)
         for row in reader:
             db.species.insert(common_name=row[0])
 
 if db(db.sightings).isempty():
-    with open('sightings.csv', 'r') as f:
+    with open('./data/sightings.csv', 'r') as f:
         reader = csv.reader(f)
         for row in reader:
             db.sightings.insert(sampling_event_identifier=row[0], common_name=row[1], observation_count=row[2])
 
 if db(db.checklists).isempty():
-    with open('checklists.csv', 'r') as f:
+    with open('./data/checklists.csv', 'r') as f:
         reader = csv.reader(f)
         for row in reader:
             db.checklists.insert(sampling_event_identifier=row[0], latitude=row[1], longitude=row[2], observation_date=row[3], time_observation=row[4], observer_id=row[5], duration_minute=row[6])
