@@ -1,0 +1,39 @@
+
+[[extend 'layout.html']]
+
+<style>
+[v-cloak] {
+     display: none;
+}
+</style>
+<head>
+    <!DOCTYPE html>
+    <meta charset="utf-8">
+
+    <!-- Load d3.js & color palette-->
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+
+<div class="section" id="app" v-cloak>
+  <!-- Put here your Vue.js template -->
+  <h1 class="title"><i class="fa-solid fa-cube"></i> Bird Stats</h1>
+  <nav><button @click="getStat">Stats</button><button @click="getTrend">Trends</button></nav>
+  <div id="my_dataviz"></div>
+  <ol>
+    <template v-for="bird in stats">
+      <li @click = getSpeciesDetails(bird.common_name)>{{bird.common_name}}</li>
+    </template>
+  </ol>
+</div>
+
+
+[[block page_scripts]]
+<!-- Loads the index-specific js for Vue -->
+<script>
+  let get_stats_url = "[[=XML(get_stats_url)]]";
+  let get_species_details_url = "[[=XML(get_species_details_url)]]";
+  let get_trends_url = "[[=XML(get_trends_url)]]";
+</script>
+<script src="../static/js/index.js"></script>
+[[end]] 
