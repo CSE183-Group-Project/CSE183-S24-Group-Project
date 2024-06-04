@@ -36,10 +36,12 @@ url_signer = URLSigner(session)
 @action('index')
 @action.uses('index.html', db, auth, url_signer)
 def index():
-    return dict(
+    #return dict(
         # COMPLETE: return here any signed URLs you need.
-        my_callback_url = URL('my_callback', signer=url_signer),
-    )
+        #my_callback_url = URL('my_callback', signer=url_signer),
+        
+   # )
+   'ok'
 
 @action('my_callback')
 @action.uses() # Add here things like db, auth, etc.
