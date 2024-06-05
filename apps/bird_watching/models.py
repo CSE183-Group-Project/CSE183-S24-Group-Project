@@ -36,6 +36,12 @@ db.define_table('checklists',
                 Field('duration_minute')
             )
 
+db.define_table(
+    'User_bird_data',
+    Field('Userid', 'reference auth_user'),
+    Field('bird_name'),
+    Field('bird_count', 'integer')
+)
 if db(db.species).isempty():
     with open('apps/bird_watching/species.csv', 'r') as f:
         reader = csv.reader(f)

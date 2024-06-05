@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Bird Count</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <div class="box">
+                <div class="columns is-vcentered">
+                    <div class="column is-one-third">
+                        <h3 class="title is-5">Species Name</h3>
+                        <p class="subtitle is-6">[[=species_name]]</p>
+                    </div>
+                    <div class="column is-one-third">
+                        <h3 class="title is-5">Current Count</h3>
+                        <p class="subtitle is-6">[[=bird_count]]</p>
+                    </div>
+                    <div class="column is-one-third">
+                        <form method="POST">
+                            <input type="hidden" name="increment" value="1">
+                            <input type="hidden" name="search_term" value="[[=search_term]]">
+                            <button type="submit" class="button is-primary">Increment Count by 1</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="has-text-centered">
+                <form method="POST">
+                    <input type="hidden" name="submit_record" value="1">
+                    <input type="hidden" name="search_term" value="[[=search_term]]">
+                    <button type="submit" class="button is-link">Submit and Go Back to Checklist</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

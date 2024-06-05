@@ -54,3 +54,11 @@ CREATE TABLE "checklists"(
     "duration_minute" CHAR(512)
 );
 success!
+timestamp: 2024-06-04T23:16:18.753058
+CREATE TABLE "User_bird_data"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "userid" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE ON UPDATE CASCADE  ,
+    "bird_name" CHAR(512),
+    "bird_count" INTEGER
+);
+success!
