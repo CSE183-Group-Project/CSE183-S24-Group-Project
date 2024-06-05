@@ -6,15 +6,17 @@
 
 //------- code from Leaflet ------------------
 
-let map;
+//let map;
 
 let app = {}
+
+var map;
 
 app.init = () => {
     app.map = L.map('map').setView([51.505, -0.09], 13)
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright"OpenStreetMap</a>'
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(app.map);
     // Adds listener
     //app.map.on('click', app.click_listener);
@@ -24,7 +26,7 @@ app.init = () => {
 //----- end of Leaflet ----------------------
 
 // beginning of already contained code from starter_vue3
-/*let app = {};
+//let app = {};
 app.data = {    
     data: function() {
         return {
@@ -38,9 +40,13 @@ app.data = {
             // This is an example.
             this.my_value += 1;
         },
-    }
+    },
+    mounted() {
+        app.init();
+        //app.load_data();
+    },
 };
-*/
+
 app.vue = Vue.createApp(app.data).mount("#app");
 
 app.load_data = function () {
