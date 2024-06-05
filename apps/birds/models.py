@@ -2,14 +2,19 @@
 This file defines the database models
 """
 
+import os
 import datetime
 from .common import db, Field, auth
 import csv
 from pydal.validators import *
+from .settings import APP_FOLDER
 
 
 def get_user_email():
-    return auth.current_user.get('email') if auth.current_user else None
+    try:
+        return auth.current_user.get('email') if auth.current_user else None
+    except Exception as e:
+        return None
 
 def get_time():
     return datetime.datetime.utcnow()
@@ -18,17 +23,33 @@ def get_time():
 # new user can eget new id
 ### Define your table below
 #
-db.define_table('observers', Field('observer_id'),Field('user_email'))
-db.define_table('species', Field('common_name'))
-db.define_table('sightings', Field('sampling_event_identifier'),Field('common_name'), Field('observation_count'))
-db.define_table('checklists', Field('sampling_event_identifier'),Field('latitude'), Field('longitude'), Field('observation_date'), Field('time_observation'), Field('observer_id'), Field('duration_minute'))
+db.define_table('observers', 
+                Field('observer_id'),
+                Field('user_email'))
+db.define_table('species', 
+                Field('common_name'))
+db.define_table('sightings',
+                Field('sampling_event_identifier'),
+                Field('common_name'), 
+                Field('observation_count'))
+db.define_table('checklists',
+                Field('sampling_event_identifier'),
+                Field('latitude', 'double'), # fix types. 
+                Field('longitude','double'), 
+                Field('observation_date'), 
+                Field('time_observation'), 
+                Field('observer_id'), 
+                Field('duration_minute'))
 #
 ## always commit your models to avoid problems later
 
 db.commit()
 
+SIGHTINGS_CSV = os.path.join(APP_FOLDER, 'sightings.csv')
 if db(db.sightings).isempty():
-    with open('/Users/sunshine/Downloads/CSE183/CSE183-S24-Group-Project/apps/birds/sightings.csv', 'r') as f:
+    with open(SIGHTINGS_CSV) as f:
         reader = csv.reader(f)
         for row in reader:
             db.sightings.insert(name=row[0])
+
+db.commit()
