@@ -1,30 +1,29 @@
 "use strict";
 
-// Define the app object
-let app = {};
 
-// Initialize the map and heatmap
+let app = {
+};
+
 app.init = () => {
-    // Initialize the Leaflet map
     app.map = L.map('map').setView([51.505, -0.09], 13);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(app.map);
 
-    // Function to update the heatmap based on species
     app.updateHeatmap = (species = '') => {
-        fetch(`/bird_watching/get_checklist_data?species=${species}`)
-            .then(response => response.json())
-            .then(data => {
+        const url = `/bird_watching/get_checklist_data?species=${species}`;
+        axios.get(url)
+            .then(response => {
+                const data = response.data;
                 if (app.heatmapLayer) {
                     app.map.removeLayer(app.heatmapLayer);
                 }
                 const heatmapData = data.map(d => [d.lat, d.lng, d.count]);
                 app.heatmapLayer = L.heatLayer(heatmapData, {
-                    radius: 20, 
-                    blur: 15,   
-                    maxZoom: 1, 
+                    radius: 20,
+                    blur: 15,
+                    maxZoom: 1,
                     gradient: {
                         0.2: 'blue',
                         0.4: 'lime',
@@ -32,7 +31,7 @@ app.init = () => {
                         0.8: 'orange',
                         1.0: 'red'
                     },
-                    max: 1.0 
+                    max: 1.0
                 }).addTo(app.map);
             })
             .catch(error => console.error('Error fetching heatmap data:', error));
@@ -40,14 +39,9 @@ app.init = () => {
 
     // Initialize autocomplete
     const initAutocomplete = () => {
-        fetch('/bird_watching/get_species')
+        axios.get('/bird_watching/get_species')
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(species => {
+                const species = response.data;
                 const speciesNames = species.map(s => s.common_name);
                 $("#species-autocomplete").autocomplete({
                     source: speciesNames,
@@ -61,18 +55,16 @@ app.init = () => {
     };
 
     initAutocomplete();
+    app.updateHeatmap();
 
-    // Get the user's location and set the map view to it
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
             const userLocation = [lat, lon];
 
-            // Update the map view to the user's location
             app.map.setView(userLocation, 13);
 
-            // Add a marker to the user's location
             L.marker(userLocation).addTo(app.map)
                 .openPopup();
         }, error => {
@@ -83,6 +75,7 @@ app.init = () => {
     }
 };
 
+// Define the Vue.js app data and methods
 app.data = {
     data: function() {
         return {
@@ -99,14 +92,13 @@ app.data = {
     },
 };
 
-app.vue = Vue.createApp(app.data).mount("#app");
 
+app.vue = Vue.createApp(app.data).mount("#app");
 
 app.load_data = function () {
     axios.get(my_callback_url).then(function (r) {
         app.vue.my_value = r.data.my_value;
     });
 }
-
 
 app.load_data();
