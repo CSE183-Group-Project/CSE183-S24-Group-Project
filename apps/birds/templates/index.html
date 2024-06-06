@@ -22,7 +22,7 @@
   <div id="my_dataviz"></div>
   <ol>
     <template v-for="bird in stats">
-      <li @click = getSpeciesDetails(bird.common_name)>{{bird.common_name}}</li>
+      <li @click = getSpeciesDetails(bird)>{{bird}}</li>
     </template>
   </ol>
 </div>

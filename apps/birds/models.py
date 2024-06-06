@@ -2,54 +2,69 @@
 This file defines the database models
 """
 
-import os
+import csv
 import datetime
 from .common import db, Field, auth
-import csv
 from pydal.validators import *
-from .settings import APP_FOLDER
 
 
 def get_user_email():
-    try:
-        return auth.current_user.get('email') if auth.current_user else None
-    except Exception as e:
-        return None
+    return auth.current_user.get('email') if auth.current_user else None
 
 def get_time():
     return datetime.datetime.utcnow()
 
-# make a new table with oobserver id and user email
-# new user can eget new id
+
 ### Define your table below
-#
 db.define_table('observers', 
                 Field('observer_id'),
                 Field('user_email'))
 db.define_table('species', 
-                Field('common_name'))
-db.define_table('sightings',
+                Field('common_name')
+                )
+
+db.define_table('sightings', 
                 Field('sampling_event_identifier'),
                 Field('common_name'), 
-                Field('observation_count'))
-db.define_table('checklists',
+                Field('observation_count')
+                )
+
+db.define_table('checklists', 
                 Field('sampling_event_identifier'),
-                Field('latitude', 'double'), # fix types. 
-                Field('longitude','double'), 
+                Field('latitude'), 
+                Field('longitude'), 
                 Field('observation_date'), 
                 Field('time_observation'), 
                 Field('observer_id'), 
-                Field('duration_minute'))
-#
-## always commit your models to avoid problems later
+                Field('duration_minute')
+            )
 
-db.commit()
-
-SIGHTINGS_CSV = os.path.join(APP_FOLDER, 'sightings.csv')
-if db(db.sightings).isempty():
-    with open(SIGHTINGS_CSV) as f:
+db(db.checklists).delete()
+if db(db.observers).isempty():
+    with open('apps/birds/observers.csv', 'r') as f:
         reader = csv.reader(f)
         for row in reader:
-            db.sightings.insert(name=row[0])
+            # print(row[0])
+            db.observers.insert(user_email=row[0],observer_id=row[1])
 
+if db(db.species).isempty():
+    with open('apps/birds/species.csv', 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            # print(row[0])
+            db.species.insert(common_name=row[0])
+
+if db(db.sightings).isempty():
+    with open('apps/birds/sightings.csv', 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            db.sightings.insert(sampling_event_identifier=row[0], common_name=row[1], observation_count=row[2])
+
+if db(db.checklists).isempty():
+    with open('apps/birds/checklists.csv', 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            db.checklists.insert(sampling_event_identifier=row[0], latitude=row[1], longitude=row[2], observation_date=row[3], time_observation=row[4], observer_id=row[5], duration_minute=row[6])
+
+## always commit your models to avoid problems later
 db.commit()

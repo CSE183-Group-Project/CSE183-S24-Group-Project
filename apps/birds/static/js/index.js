@@ -1,43 +1,42 @@
 "use strict";
 let app = {};
 
-
-app.data = {    
+app.data = {
     data: function() {
         return {
-            // Complete as you see fit.
-            stats: {},
+            stats: [],
             details: [],
             trends: [],
         };
     },
     methods: {
         getStat(){
-            axios.get(get_stats_url).then((res)=>{
-                this.stats=res.data.stats
-                console.log("STATS:", this.stats)
-            }).catch(err=>{
+            axios.get(get_stats_url).then((res) => {
+                this.stats = res.data.species_list;
+                console.log("STATS:", this.stats);
+            }).catch(err => {
                 console.log("Failed at getStats in index.js", err);
-            })
+            });
         },
 
         getSpeciesDetails(species_name){
-            axios.get(get_species_details_url,{species_name: species_name}).then((res)=>{
-                this.details=res.data.details
-                getGraph(res.data.details)
-                console.log("DETAILS:", this.details)
-            }).catch(err=>{
+            axios.get(get_species_details_url + "/" + species_name).then((res) => {
+                this.details = res.data.sightings_data;
+                console.log("DETAILS:", this.details);
+                getGraph(this.details);
+            }).catch(err => {
                 console.log("Failed at getSpeciesDetails in index.js", err);
-            })
+            });
         },
 
         getTrend(){
-            axios.get(get_trends_url).then((res)=>{
-                this.trend=res.data.trend
-                console.log("Trend:", this.trend)
-            }).catch(err=>{
+            axios.get(get_trends_url).then((res) => {
+                this.trends = res.data.trend_data;
+                console.log("Trend:", this.trends);
+                getGraph(this.trends);
+            }).catch(err => {
                 console.log("Failed at getTrend in index.js", err);
-            })
+            });
         },
     }
 };
@@ -45,110 +44,70 @@ app.data = {
 app.vue = Vue.createApp(app.data).mount("#app");
 
 app.load_data = function () {
-    axios.get(get_stats_url).then((res)=>{
-        app.vue.stats=res.data.stats
-        console.log("LOAD:", this.stats)
-    }).catch(err=>{
+    axios.get(get_stats_url).then((res) => {
+        app.vue.stats = res.data.species_list;
+        console.log("LOAD:", app.vue.stats);
+    }).catch(err => {
         console.log("Failed at LOAD in index.js", err);
-    })
+    });
 }
 
 app.load_data();
 
-// set the dimensions and margins of the graph
-var margin = {top: 10, right: 30, bottom: 20, left: 50},
-    width = 460 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+const getGraph = (data) => {
+    console.log("Graph Data:", data);
 
-// append the svg object to the body of the page
-var svg = d3.select("#my_dataviz")
-  .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
+    // Clear previous graph IDK IF THIS IS NESSESSARY
+    d3.select("#my_dataviz").selectAll("*").remove();
 
-// Parse the Data
-const getGraph = (data)=>{
-
-  // List of subgroups = header of the csv files = soil condition here
-  var subgroups = data.columns.slice(1)
-
-  // List of groups = species here = value of the first column called group -> I show them on the X axis
-  var groups = d3.map(data, function(d){return(d.group)}).keys()
-
-  // Add X axis
-  var x = d3.scaleBand()
-      .domain(groups)
-      .range([0, width])
-      .padding([0.2])
-  svg.append("g")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x).tickSizeOuter(0));
-
-  // Add Y axis
-  var y = d3.scaleLinear()
-    .domain([0, 120])
-    .range([ height, 0 ]);
-  svg.append("g")
-    .call(d3.axisLeft(y));
-
-  // color palette = one color per subgroup
-  var color = d3.scaleOrdinal()
-    .domain(subgroups)
-    .range(d3.schemeSet2);
-
-  //stack the data? --> stack per subgroup
-  var stackedData = d3.stack()
-    .keys(subgroups)
-    (data)
+    // set the dimensions and margins of the graph
 
 
+    // set the dimensions and margins of the graph
+    var margin = {top: 30, right: 30, bottom: 70, left: 60},
+        width = 460 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
 
+    // append the svg object to the body of the page
+    var svg = d3.select("#my_dataviz")
+      .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
 
-  // ----------------
-  // Highlight a specific subgroup when hovered
-  // ----------------
+    
 
-  // What happens when user hover a bar
-  var mouseover = function(d) {
-    // what subgroup are we hovering?
-    var subgroupName = d3.select(this.parentNode).datum().key; // This was the tricky part
-    var subgroupValue = d.data[subgroupName];
-    // Reduce opacity of all rect to 0.2
-    d3.selectAll(".myRect").style("opacity", 0.2)
-    // Highlight all rects of this subgroup with opacity 0.8. It is possible to select them since they have a specific class = their name.
-    d3.selectAll("."+subgroupName)
-      .style("opacity", 1)
+    // X axis
+    var x = d3.scaleBand()
+      .range([ 0, width ])
+      .domain(data.map(function(d) { return d.date; }))
+      .padding(0.2);
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+        .attr("transform", "translate(-10,0)rotate(-45)")
+        .style("text-anchor", "end");
+
+    console.log("MAX VALUE:", data.map(function(d){return parseInt(d.count)}))
+    // Add Y axis
+    var y = d3.scaleLinear()
+      .domain([0, Math.max(...data.map(function(d){return parseInt(d.count)}))+1])
+      .range([ height, 0]);
+    svg.append("g")
+      .call(d3.axisLeft(y));
+
+    // Bars
+    svg.selectAll("mybar")
+      .data(data)
+      .enter()
+      .append("rect")
+        .attr("x", function(d) { return x(d.date); })
+        .attr("y", function(d) { return y(parseInt(d.count))})
+        .attr("width", x.bandwidth())
+        .attr("height", function(d) { return height - y(parseInt(d.count)); })
+        .attr("fill", "#69b3a2")
+
     }
-
-  // When user do not hover anymore
-  var mouseleave = function(d) {
-    // Back to normal opacity: 0.8
-    d3.selectAll(".myRect")
-      .style("opacity",0.8)
-    }
-
-  // Show the bars
-  svg.append("g")
-    .selectAll("g")
-    // Enter in the stack data = loop key per key = group per group
-    .data(stackedData)
-    .enter().append("g")
-      .attr("fill", function(d) { return color(d.key); })
-      .attr("class", function(d){ return "myRect " + d.key }) // Add a class to each subgroup: their name
-      .selectAll("rect")
-      // enter a second time = loop subgroup per subgroup to add all rectangles
-      .data(function(d) { return d; })
-      .enter().append("rect")
-        .attr("x", function(d) { return x(d.data.group); })
-        .attr("y", function(d) { return y(d[1]); })
-        .attr("height", function(d) { return y(d[0]) - y(d[1]); })
-        .attr("width",x.bandwidth())
-        .attr("stroke", "grey")
-      .on("mouseover", mouseover)
-      .on("mouseleave", mouseleave)
-
-}
-
