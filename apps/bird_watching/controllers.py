@@ -25,6 +25,7 @@ session, db, T, auth, and tempates are examples of Fixtures.
 Warning: Fixtures MUST be declared with @action.uses({fixtures}) else your app will result in undefined behavior
 """
 
+import json
 from py4web import action, request, abort, redirect, URL
 from yatl.helpers import A
 from .common import db, session, T, cache, auth, logger, authenticated, unauthenticated, flash
@@ -41,6 +42,26 @@ def index():
         my_callback_url = URL('my_callback', signer=url_signer),
         
    )
+
+@action('get_checklist_data')
+@action.uses(db)
+def get_checklist_data():
+    species = request.params.get('species', '')
+    query = (db.checklists.id > 0)
+    if species:
+        query &= (db.sightings.common_name == species) & (db.checklists.sampling_event_identifier == db.sightings.sampling_event_identifier)
+    
+    rows = db(query).select(db.checklists.latitude, db.checklists.longitude, db.sightings.observation_count)
+    data = [{'lat': row.checklists.latitude, 'lng': row.checklists.longitude, 'count': row.sightings.observation_count} for row in rows]
+    return json.dumps(data)
+
+@action('get_species')
+@action.uses(db)
+def get_species():
+    rows = db(db.species.id > 0).select(db.species.common_name)
+    data = [{'common_name': row.common_name} for row in rows]
+    return json.dumps(data)
+
 
 @action('my_callback')
 @action.uses() # Add here things like db, auth, etc.
