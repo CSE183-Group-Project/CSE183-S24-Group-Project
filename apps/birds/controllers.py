@@ -79,7 +79,6 @@ def get_species_details(species_name=None):
     sightings = db((db.sightings.sampling_event_identifier == db.checklists.sampling_event_identifier) &
                    (db.checklists.observer_id == observer_id) &
                    (db.sightings.common_name == species_name)).select(db.sightings.ALL, db.checklists.ALL)
-    # Prepare data for visualization
     sightings_data = []
     for sighting in sightings:
         sightings_data.append({
@@ -101,7 +100,6 @@ def get_trends():
     # Fetch all sightings by the user to show trends
     sightings = db((db.sightings.sampling_event_identifier == db.checklists.sampling_event_identifier) &
                    (db.checklists.observer_id == observer_id)).select(db.sightings.ALL, db.checklists.ALL)
-    # Aggregate data for trends
     trend_data = {}
     for sighting in sightings:
         date = sighting.checklists.observation_date
