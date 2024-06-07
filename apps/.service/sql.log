@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 timestamp: 2024-06-03T12:17:58.185927
+=======
+timestamp: 2024-06-05T19:02:50.514732
+>>>>>>> origin/Ivan
 CREATE TABLE "py4web_error"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "uuid" CHAR(512),

@@ -1,24 +1,95 @@
 "use strict";
 
-// This will be the object that will contain the Vue attributes
-// and be used to initialize it.
-let app = {};
 
+let app = {
+};
 
-app.data = {    
+app.init = () => {
+    app.map = L.map('map').setView([51.505, -0.09], 13);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(app.map);
+
+    app.updateHeatmap = (species = '') => {
+        const url = `/bird_watching/get_checklist_data?species=${species}`;
+        axios.get(url)
+            .then(response => {
+                const data = response.data;
+                if (app.heatmapLayer) {
+                    app.map.removeLayer(app.heatmapLayer);
+                }
+                const heatmapData = data.map(d => [d.lat, d.lng, d.count]);
+                app.heatmapLayer = L.heatLayer(heatmapData, {
+                    radius: 20,
+                    blur: 15,
+                    maxZoom: 1,
+                    gradient: {
+                        0.2: 'blue',
+                        0.4: 'lime',
+                        0.6: 'yellow',
+                        0.8: 'orange',
+                        1.0: 'red'
+                    },
+                    max: 1.0
+                }).addTo(app.map);
+            })
+            .catch(error => console.error('Error fetching heatmap data:', error));
+    };
+
+    // Initialize autocomplete
+    const initAutocomplete = () => {
+        axios.get('/bird_watching/get_species')
+            .then(response => {
+                const species = response.data;
+                const speciesNames = species.map(s => s.common_name);
+                $("#species-autocomplete").autocomplete({
+                    source: speciesNames,
+                    select: (event, ui) => {
+                        console.log('Selected species:', ui.item.value);
+                        app.updateHeatmap(ui.item.value);
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching species data:', error));
+    };
+
+    initAutocomplete();
+    app.updateHeatmap();
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const userLocation = [lat, lon];
+
+            app.map.setView(userLocation, 13);
+
+            L.marker(userLocation).addTo(app.map)
+                .openPopup();
+        }, error => {
+            console.error("Error getting user's location: ", error);
+        });
+    } else {
+        console.error('Geolocation is not supported by this browser.');
+    }
+};
+
+// Define the Vue.js app data and methods
+app.data = {
     data: function() {
         return {
-            // Complete as you see fit.
-            my_value: 1, // This is an example.
+            my_value: 1,
         };
     },
     methods: {
-        // Complete as you see fit.
         my_function: function() {
-            // This is an example.
             this.my_value += 1;
         },
-    }
+    },
+    mounted() {
+        app.init();
+    },
 };
 
 app.vue = Vue.createApp(app.data).mount("#app");

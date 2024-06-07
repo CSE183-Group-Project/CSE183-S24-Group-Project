@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 timestamp: 2024-06-03T12:17:58.221176
+=======
+timestamp: 2024-06-03T17:01:47.137852
+>>>>>>> origin/Ivan
 CREATE TABLE "py4web_session"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "rkey" CHAR(512),
@@ -8,7 +12,11 @@ CREATE TABLE "py4web_session"(
     "expires_on" TIMESTAMP
 );
 success!
+<<<<<<< HEAD
 timestamp: 2024-06-03T12:17:58.222551
+=======
+timestamp: 2024-06-03T17:01:47.141781
+>>>>>>> origin/Ivan
 CREATE TABLE "auth_user"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "email" CHAR(512) UNIQUE,
@@ -21,20 +29,32 @@ CREATE TABLE "auth_user"(
     "past_passwords_hash" TEXT
 );
 success!
+<<<<<<< HEAD
 timestamp: 2024-06-03T12:17:58.223552
+=======
+timestamp: 2024-06-03T17:01:47.144873
+>>>>>>> origin/Ivan
 CREATE TABLE "auth_user_tag_groups"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "tagpath" CHAR(512),
     "record_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE ON UPDATE CASCADE  
 );
 success!
+<<<<<<< HEAD
 timestamp: 2024-06-03T12:17:58.225219
+=======
+timestamp: 2024-06-03T17:01:47.148959
+>>>>>>> origin/Ivan
 CREATE TABLE "species"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "common_name" CHAR(512)
 );
 success!
+<<<<<<< HEAD
 timestamp: 2024-06-03T12:17:58.225907
+=======
+timestamp: 2024-06-03T17:01:47.150546
+>>>>>>> origin/Ivan
 CREATE TABLE "sightings"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "sampling_event_identifier" CHAR(512),
@@ -42,7 +62,11 @@ CREATE TABLE "sightings"(
     "observation_count" CHAR(512)
 );
 success!
+<<<<<<< HEAD
 timestamp: 2024-06-03T12:17:58.226667
+=======
+timestamp: 2024-06-03T17:01:47.152272
+>>>>>>> origin/Ivan
 CREATE TABLE "checklists"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "sampling_event_identifier" CHAR(512),
@@ -54,6 +78,7 @@ CREATE TABLE "checklists"(
     "duration_minute" CHAR(512)
 );
 success!
+<<<<<<< HEAD
 timestamp: 2024-06-04T23:16:18.753058
 CREATE TABLE "User_bird_data"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -62,3 +87,5 @@ CREATE TABLE "User_bird_data"(
     "bird_count" INTEGER
 );
 success!
+=======
+>>>>>>> origin/Ivan

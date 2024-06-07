@@ -35,6 +35,7 @@ from py4web.utils.grid import Grid, GridClassStyleBulma
 from py4web.utils.form import Form, FormStyleBulma
 from pydal.validators import IS_INT_IN_RANGE
 from pydal import Field
+import json
 
 
 url_signer = URLSigner(session)
@@ -190,8 +191,28 @@ def mychecklist():
     )
     return dict(grid=grid)
 
+@action('get_checklist_data')
+@action.uses(db)
+def get_checklist_data():
+    species = request.params.get('species', '')
+    query = (db.checklists.id > 0)
+    if species:
+        query &= (db.sightings.common_name == species) & (db.checklists.sampling_event_identifier == db.sightings.sampling_event_identifier)
+    
+    rows = db(query).select(db.checklists.latitude, db.checklists.longitude, db.sightings.observation_count)
+    data = [{'lat': row.checklists.latitude, 'lng': row.checklists.longitude, 'count': row.sightings.observation_count} for row in rows]
+    return json.dumps(data)
+
+@action('get_species')
+@action.uses(db)
+def get_species():
+    rows = db(db.species.id > 0).select(db.species.common_name)
+    data = [{'common_name': row.common_name} for row in rows]
+    return json.dumps(data)
+
+
 @action('my_callback')
-@action.uses()
+@action.uses() # Add here things like db, auth, etc.
 def my_callback():
     # The return value should be a dictionary that will be sent as JSON.
     return dict(my_value=3)

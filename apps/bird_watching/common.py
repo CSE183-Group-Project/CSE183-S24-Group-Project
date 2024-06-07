@@ -15,6 +15,7 @@ from py4web.utils.factories import ActionFactory
 from py4web.utils.form import FormStyleBulma
 from . import settings
 
+
 # #######################################################
 # implement custom loggers form settings.LOGGERS
 # #######################################################
@@ -41,7 +42,11 @@ db = DAL(
     pool_size=settings.DB_POOL_SIZE,
     migrate=settings.DB_MIGRATE,
     fake_migrate=settings.DB_FAKE_MIGRATE,
+    adapter_args={'timeout': 30} 
 )
+
+# Enable Write-Ahead Logging (WAL) mode for SQLite
+db.executesql('PRAGMA journal_mode=WAL')
 
 # #######################################################
 # define global objects that may or may not be used by the actions

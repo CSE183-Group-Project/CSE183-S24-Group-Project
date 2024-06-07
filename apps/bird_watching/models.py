@@ -42,6 +42,7 @@ db.define_table(
     Field('bird_name'),
     Field('bird_count', 'integer')
 )
+
 if db(db.species).isempty():
     with open('apps/bird_watching/data/species.csv', 'r') as f:
         reader = csv.reader(f)
@@ -62,5 +63,4 @@ if db(db.checklists).isempty():
 
 ## always commit your models to avoid problems later
 db.commit()
-
 
