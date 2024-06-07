@@ -7,11 +7,16 @@ app.data = {
             stats: [],
             details: [],
             trends: [],
+            search_query: '',
+            search_results: [],
+            selected_species: '',
         };
     },
     methods: {
-        getStat(){
-            axios.get(get_stats_url).then((res) => {
+        getStat(order = "recent"){
+          this.selected_species = ""
+            d3.select("#my_dataviz").selectAll("*").remove();
+            axios.get(get_stats_url +"/"+order).then((res) => {
                 this.stats = res.data.species_list;
                 console.log("STATS:", this.stats);
             }).catch(err => {
@@ -20,6 +25,7 @@ app.data = {
         },
 
         getSpeciesDetails(species_name){
+          this.selected_species = species_name;
             axios.get(get_species_details_url + "/" + species_name).then((res) => {
                 this.details = res.data.sightings_data;
                 console.log("DETAILS:", this.details);
@@ -30,6 +36,7 @@ app.data = {
         },
 
         getTrend(){
+            this.selected_species = ""
             axios.get(get_trends_url).then((res) => {
                 this.trends = res.data.trend_data;
                 console.log("Trend:", this.trends);
@@ -38,13 +45,22 @@ app.data = {
                 console.log("Failed at getTrend in index.js", err);
             });
         },
+
+        searchSpecies(){
+            axios.get(search_species_url, {params: {query: this.search_query}}).then((res) => {
+                this.search_results = res.data.species_list;
+                console.log("SEARCH RESULTS:", this.search_results);
+            }).catch(err => {
+                console.log("Failed at searchSpecies in index.js", err);
+            });
+        },
     }
 };
 
 app.vue = Vue.createApp(app.data).mount("#app");
 
 app.load_data = function () {
-    axios.get(get_stats_url).then((res) => {
+    axios.get(get_stats_url+"/recent").then((res) => {
         app.vue.stats = res.data.species_list;
         console.log("LOAD:", app.vue.stats);
     }).catch(err => {
@@ -57,7 +73,7 @@ app.load_data();
 const getGraph = (data) => {
     console.log("Graph Data:", data);
 
-    // Clear previous graph IDK IF THIS IS NESSESSARY
+    // Clear previous graph
     d3.select("#my_dataviz").selectAll("*").remove();
 
     // set the dimensions and margins of the graph

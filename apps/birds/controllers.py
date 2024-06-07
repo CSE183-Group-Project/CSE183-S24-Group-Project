@@ -42,11 +42,12 @@ def index():
         get_stats_url = URL('get_stats'),
         get_species_details_url = URL('get_species_details'),
         get_trends_url = URL('get_trends'),
+        search_species_url = URL('search_species'),
     )
 
-@action('get_stats')
+@action('get_stats/<order>')
 @action.uses(db, auth.user)
-def get_stats():
+def get_stats(order="recent"):
     user_email = get_user_email()
     observer_id = db(db.observers.user_email == user_email).select().first()
     if observer_id:
@@ -56,24 +57,12 @@ def get_stats():
     
     species_seen = db((db.sightings.sampling_event_identifier == db.checklists.sampling_event_identifier) &
                       (db.checklists.observer_id == observer_id) &
-                      (db.sightings.common_name == db.species.common_name)).select(db.species.ALL, distinct=True)
+                      (db.sightings.common_name == db.species.common_name)).select(db.species.ALL, distinct=True, orderby = db.checklists.observation_date)
     species_list = [species.common_name for species in species_seen]
-    print("Species List:", species_list)  
+    print("Species List:", species_list) 
+    if order == "first":
+        species_list.reverse() 
     return dict(species_list=species_list)
-
-
-# def get_stats():
-#     # when we sign up is it creating a observer id how to connect email with obsever id
-#     user_email = get_user_email()
-#     print(db(db.checklists.observer_id == "obs1644106"))
-#     # Fetch the list of species seen by the user
-#     # PROBABLY GONNA GET A LIST FOR OBSERVER ID
-#     observer_id = db(db.observers.user_email == user_email).select(db.observers.observer_id)
-#     species_seen = db((db.sightings.sampling_event_identifier == db.checklists.sampling_event_identifier) &
-#                       (db.checklists.observer_id == observer_id) &
-#                       (db.sightings.common_name == db.species.common_name)).select(db.species.ALL, distinct=True)
-#     species_list = [species.common_name for species in species_seen]
-#     return dict(species_list=species_list)
 
 
 @action('get_species_details/<species_name>')
@@ -123,5 +112,12 @@ def get_trends():
     trend_list = [{'date': date, 'count': count} for date, count in sorted(trend_data.items())]
     return dict(trend_data=trend_list)
 
-   
-    
+@action('search_species')
+@action.uses(db, auth.user)
+def search_species():
+    query = request.params.get('query', '').strip().lower()
+    results = []
+    if query:
+        results = db(db.species.common_name.lower().contains(query)).select(db.species.ALL)
+    species_list = [species.common_name for species in results]
+    return dict(species_list=species_list)
