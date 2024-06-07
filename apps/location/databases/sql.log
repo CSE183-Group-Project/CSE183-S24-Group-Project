@@ -1,0 +1,166 @@
+timestamp: 2024-05-13T15:29:38.044600
+CREATE TABLE "py4web_session"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "rkey" CHAR(512),
+    "rvalue" TEXT,
+    "expiration" INTEGER,
+    "created_on" TIMESTAMP,
+    "expires_on" TIMESTAMP
+);
+success!
+timestamp: 2024-05-13T15:29:38.046394
+CREATE TABLE "auth_user"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "email" CHAR(512) UNIQUE,
+    "password" CHAR(512),
+    "first_name" CHAR(512),
+    "last_name" CHAR(512),
+    "sso_id" CHAR(512),
+    "action_token" CHAR(512),
+    "last_password_change" TIMESTAMP,
+    "past_passwords_hash" TEXT
+);
+success!
+timestamp: 2024-05-13T15:29:38.047576
+CREATE TABLE "auth_user_tag_groups"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "tagpath" CHAR(512),
+    "record_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE ON UPDATE CASCADE  
+);
+success!
+timestamp: 2024-05-13T15:35:56.801416
+CREATE TABLE "contact_request"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "name" CHAR(512),
+    "email" CHAR(512),
+    "phone" CHAR(512),
+    "message" TEXT,
+    "created_at" TIMESTAMP
+);
+success!
+timestamp: 2024-06-05T18:41:58.977508
+CREATE TABLE "species"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "name" CHAR(512) UNIQUE
+);
+success!
+timestamp: 2024-06-05T18:41:58.979911
+CREATE TABLE "regions"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "name" CHAR(512),
+    "latitude" DOUBLE,
+    "longitude" DOUBLE
+);
+success!
+timestamp: 2024-06-05T18:42:46.298853
+CREATE TABLE "users"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "username" CHAR(512) UNIQUE,
+    "email" CHAR(512),
+    "password" CHAR(512)
+);
+success!
+timestamp: 2024-06-05T18:42:46.300770
+CREATE TABLE "checklists"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "user_id" INTEGER REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE  ,
+    "region_id" INTEGER REFERENCES "regions" ("id") ON DELETE CASCADE ON UPDATE CASCADE  ,
+    "date" DATE,
+    "latitude" DOUBLE,
+    "longitude" DOUBLE,
+    "sampling_event_identifier" CHAR(512)
+);
+success!
+timestamp: 2024-06-05T18:42:46.301777
+CREATE TABLE "sightings"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "checklist_id" INTEGER REFERENCES "checklists" ("id") ON DELETE CASCADE ON UPDATE CASCADE  ,
+    "species_id" INTEGER REFERENCES "species" ("id") ON DELETE CASCADE ON UPDATE CASCADE  ,
+    "count" INTEGER
+);
+success!
+timestamp: 2024-06-06T19:11:27.847612
+ALTER TABLE "species" ADD "common_name" CHAR(512);
+success!
+timestamp: 2024-06-06T19:11:27.855622
+ALTER TABLE "sightings" ADD "sampling_event_identifier" CHAR(512);
+timestamp: 2024-06-06T19:11:27.856827
+ALTER TABLE "sightings" ADD "common_name" CHAR(512);
+timestamp: 2024-06-06T19:11:27.857872
+ALTER TABLE "sightings" ADD "observation_count" CHAR(512);
+success!
+timestamp: 2024-06-06T19:11:27.861308
+ALTER TABLE "checklists" ADD "observation_date" CHAR(512);
+timestamp: 2024-06-06T19:11:27.862211
+ALTER TABLE "checklists" ADD "time_observation" CHAR(512);
+timestamp: 2024-06-06T19:11:27.863086
+ALTER TABLE "checklists" ADD "observer_id" CHAR(512);
+timestamp: 2024-06-06T19:11:27.864231
+ALTER TABLE "checklists" ADD "duration_minute" CHAR(512);
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!

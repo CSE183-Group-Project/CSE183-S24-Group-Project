@@ -1,0 +1,44 @@
+<h1>Location: {{=region.name}}</h1>
+
+<h2>Species List</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Species</th>
+            <th>Checklists</th>
+            <th>Sightings</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{for species in species_stats:}}
+        <tr>
+            <td>
+                <a href="#" onclick="showSightingsGraph('{{=species['name']}}')"
+                    >{{=species['name']}}</a
+                >
+            </td>
+            <td>{{=species['checklist_count']}}</td>
+            <td>{{=species['sighting_count']}}</td>
+        </tr>
+        {{pass}}
+    </tbody>
+</table>
+
+<h2>Sightings Graph</h2>
+<div id="sightings-graph"></div>
+
+<h2>Top Contributors</h2>
+<ul>
+    {{for contributor in top_contributors:}}
+    <li>{{=contributor.username}}</li>
+    {{pass}}
+</ul>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    function showSightingsGraph(speciesName) {
+        // Retrieve the sightings data for the selected species using AJAX
+        // and update the sightings graph using Chart.js
+        // ...
+    }
+</script>
