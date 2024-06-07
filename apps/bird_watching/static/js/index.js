@@ -39,7 +39,7 @@ app.init = () => {
 
     // Initialize autocomplete
     const initAutocomplete = () => {
-        axios.get('/bird_watching/get_species')
+        axios.get(get_species_url) //'/bird_watching/get_species'
             .then(response => {
                 const species = response.data;
                 const speciesNames = species.map(s => s.common_name);
@@ -72,7 +72,32 @@ app.init = () => {
         });
     } else {
         console.error('Geolocation is not supported by this browser.');
-    }
+    };
+
+    // Init FeatureGroup
+    app.drawnItems = new L.FeatureGroup();
+    app.map.addLayer(app.drawnItems);
+
+    // Init draw control for FeatureGroup component
+    let drawControl = new L.Control.Draw({
+        edit: {
+            featureGroup: app.drawnItems
+        },
+        draw: {
+            rectangle: true,
+            polyline: false,
+            polygon: false,
+            circle: false,
+            marker: false,
+            circlemarker: false,
+        }
+    });
+    app.map.addControl(drawControl);
+
+    app.map.on(L.Draw.Event.CREATED, function(event) {
+        let layer = event.layer;
+        app.drawnItems.addLayer(layer);
+    })
 };
 
 // Define the Vue.js app data and methods

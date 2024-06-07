@@ -35,15 +35,16 @@ from .models import get_user_email
 url_signer = URLSigner(session)
 
 @action('index')
-@action.uses('index.html', db, auth, url_signer)
+@action.uses('index.html', db, auth.user, url_signer)
 def index():
     return dict(
         # COMPLETE: return here any signed URLs you need.
         my_callback_url = URL('my_callback', signer=url_signer),
-        
+        get_checklist_data_url = URL('get_checklist_data', signer=url_signer),
+        get_species_url = URL('get_species', signer=url_signer),
    )
 
-@action('get_checklist_data')
+@action('get_checklist_data', method='GET')
 @action.uses(db)
 def get_checklist_data():
     species = request.params.get('species', '')
@@ -55,7 +56,7 @@ def get_checklist_data():
     data = [{'lat': row.checklists.latitude, 'lng': row.checklists.longitude, 'count': row.sightings.observation_count} for row in rows]
     return json.dumps(data)
 
-@action('get_species')
+@action('get_species', method='GET')
 @action.uses(db)
 def get_species():
     rows = db(db.species.id > 0).select(db.species.common_name)

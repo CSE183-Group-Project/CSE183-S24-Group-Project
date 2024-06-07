@@ -36,6 +36,8 @@
 [[block page_scripts]]
 <script>
   let my_callback_url = "[[=XML(my_callback_url)]]";
+  let get_checklist_data_url = "[[=XML(get_checklist_data_url)]]";
+  let get_species_url = "[[=XML(get_species_url)]]";
 </script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -43,5 +45,6 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
 integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="/bird_watching/static/js/leaflet-heat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 <script src="/bird_watching/static/js/index.js"></script>
 [[end]]
