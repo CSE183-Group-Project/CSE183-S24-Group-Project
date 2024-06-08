@@ -1,5 +1,63 @@
 [[extend 'layout.html']]
-<div class="section">
-    <h1 class="title">Locations</h1>
-    <p>This is the default text for the locations page.</p>
-</div>
+
+<!doctype html>
+<html>
+    <head>
+        <title>Bird Species Chart</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+        />
+    </head>
+    <body>
+        <section class="section">
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="column is-half">
+                        <h2 class="title has-text-centered">
+                            Number of Bird Sightings Over Time
+                        </h2>
+                        <canvas id="birdChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            const labels = [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+            ];
+            const data = [10, 15, 20, 25, 30, 35];
+
+            const ctx = document.getElementById("birdChart").getContext("2d");
+            const chart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Number of Birds",
+                            data: data,
+                            backgroundColor: "rgba(75, 192, 192, 0.2)",
+                            borderColor: "rgba(75, 192, 192, 1)",
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                        },
+                    },
+                },
+            });
+        </script>
+    </body>
+</html>
