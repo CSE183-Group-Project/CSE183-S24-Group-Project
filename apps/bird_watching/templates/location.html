@@ -1,5 +1,4 @@
 [[extend 'layout.html']]
-
 <!doctype html>
 <html>
     <head>
@@ -31,9 +30,8 @@
                 </div>
             </div>
         </section>
-
         <script>
-            // Generate random bird sightings data for each month
+            // Generate bird sightings data for each month
             const labels = [
                 "January",
                 "February",
@@ -74,15 +72,30 @@
                 },
             });
 
-            // Data for the most common species chart
-            const speciesLabels = [
+            const birdSpecies = [
                 "Sparrow",
                 "Robin",
                 "Blue Jay",
                 "Cardinal",
                 "Finch",
+                "Chickadee",
+                "Woodpecker",
+                "Dove",
+                "Wren",
+                "Owl",
             ];
-            const speciesData = [25, 20, 15, 12, 8];
+            const speciesLabels = [];
+            const speciesData = [];
+
+            for (let i = 0; i < 5; i++) {
+                const randomIndex = Math.floor(
+                    Math.random() * birdSpecies.length,
+                );
+                const selectedSpecies = birdSpecies[randomIndex];
+                speciesLabels.push(selectedSpecies);
+                speciesData.push(Math.floor(Math.random() * 30) + 1);
+                birdSpecies.splice(randomIndex, 1);
+            }
 
             const speciesCtx = document
                 .getElementById("speciesChart")

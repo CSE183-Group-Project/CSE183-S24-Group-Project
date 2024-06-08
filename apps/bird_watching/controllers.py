@@ -68,8 +68,6 @@ def get_species():
     data = [{'common_name': row.common_name} for row in rows]
     return json.dumps(data)
 
-
-
 @action('my_callback')
 @action.uses() # Add here things like db, auth, etc.
 def my_callback():
