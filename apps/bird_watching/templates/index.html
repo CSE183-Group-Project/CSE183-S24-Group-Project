@@ -1,14 +1,49 @@
 [[extend 'layout.html']]
 
+<div class="section" id="app">
+  <h1 class="title"><i class="fa-solid fa-cube"></i> Welcome users!</h1>
+  
+  <a href="/bird_watching/stats" class="button is-primary">
+      Go to Stats Page
+  </a>
+</div>
+
+
+[[block page_styles]]
 <style>
-[v-cloak] {
-     display: none;
-}
+  .ui-autocomplete {
+      background: white;
+      border: 1px solid #ccc;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000 !important; 
+      position: absolute;
+  }
+  .ui-menu-item {
+      padding: 10px;
+      cursor: pointer;
+  }
+  .ui-menu-item:hover {
+      background: #f0f0f0;
+  }
+  #map {
+      height: 600px; 
+  }
 </style>
+[[end]]
 
-
-<div class="section" id="app" v-cloak>
-  <!-- Put here your Vue.js template -->
-  <!-- <h1 class="title"><i class="fa-solid fa-cube"></i> Title</h1>
-  <p>Content: my_value: {{my_value}} </p>
-</div> -->
+[[block page_scripts]]
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="/bird_watching/static/js/leaflet-heat.js"></script>
+<script src="/bird_watching/static/js/index.js"></script>
+<script>
+  let get_stats_url = "[[=XML(get_stats_url)]]";
+  let get_species_details_url = "[[=XML(get_species_details_url)]]";
+  let get_trends_url = "[[=XML(get_trends_url)]]";
+  let search_species_url = "[[=URL('search_species')]]";
+</script>
+[[end]]

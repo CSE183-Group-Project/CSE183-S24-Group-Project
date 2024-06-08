@@ -18,7 +18,8 @@ def get_time():
 ### Define your table below
 db.define_table('observers', 
                 Field('observer_id'),
-                Field('user_email'))
+                Field('user_email')
+                )
 db.define_table('species', 
                 Field('common_name')
                 )
@@ -39,33 +40,38 @@ db.define_table('checklists',
                 Field('duration_minute')
             )
 
+
 # this is my delete to update data to populate
-# db(db.observers).delete()
-if db(db.observers).isempty():
-    with open('apps/birds/observers.csv', 'r') as f:
-        reader = csv.reader(f)
-        for row in reader:
-            # print(row[0])
-            db.observers.insert(user_email=row[0],observer_id=row[1])
+db(db.species).delete()
+db(db.sightings).delete()
+db(db.checklists).delete()
+db(db.observers).delete()
 
 if db(db.species).isempty():
-    with open('apps/birds/species.csv', 'r') as f:
+    with open('apps/bird_watching/species.csv', 'r') as f:
         reader = csv.reader(f)
         for row in reader:
             # print(row[0])
             db.species.insert(common_name=row[0])
 
 if db(db.sightings).isempty():
-    with open('apps/birds/sightings.csv', 'r') as f:
+    with open('apps/bird_watching/sightings.csv', 'r') as f:
         reader = csv.reader(f)
         for row in reader:
             db.sightings.insert(sampling_event_identifier=row[0], common_name=row[1], observation_count=row[2])
 
 if db(db.checklists).isempty():
-    with open('apps/birds/checklists.csv', 'r') as f:
+    with open('apps/bird_watching/checklists.csv', 'r') as f:
         reader = csv.reader(f)
         for row in reader:
             db.checklists.insert(sampling_event_identifier=row[0], latitude=row[1], longitude=row[2], observation_date=row[3], time_observation=row[4], observer_id=row[5], duration_minute=row[6])
+
+if db(db.observers).isempty():
+    with open('apps/bird_watching/observers.csv', 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            # print(row[0])
+            db.observers.insert(user_email=row[0],observer_id=row[1])
 
 ## always commit your models to avoid problems later
 db.commit()

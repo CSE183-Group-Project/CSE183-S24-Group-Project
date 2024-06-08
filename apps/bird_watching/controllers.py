@@ -45,9 +45,15 @@ def index():
         search_species_url = URL('search_species'),
     )
 
+@action('stats')
+@action.uses('stats.html')
+def stats():
+    return dict()
+
+
 @action('get_stats/<order>')
-@action.uses(db, auth.user)
-def get_stats(order="recent"):
+@action.uses("stats.html", db, auth, session, auth.user, url_signer)
+def get_stats(order="recent"): 
     user_email = get_user_email()
     observer_id = db(db.observers.user_email == user_email).select().first()
     if observer_id:
@@ -66,7 +72,7 @@ def get_stats(order="recent"):
 
 
 @action('get_species_details/<species_name>')
-@action.uses(db, auth.user)
+@action.uses("stats.html",db, auth, session, auth.user)
 def get_species_details(species_name=None):
     print("SPECIES:", species_name)
     user_email = get_user_email()
@@ -89,7 +95,7 @@ def get_species_details(species_name=None):
     return dict(species_name=species_name, sightings_data=sightings_data)
 
 @action('get_trends')
-@action.uses(db, auth.user)
+@action.uses("stats.html",db, auth, session, auth.user)
 def get_trends():
     user_email = get_user_email()
     observer_id = db(db.observers.user_email == user_email).select().first()
@@ -111,7 +117,7 @@ def get_trends():
     return dict(trend_data=trend_list)
 
 @action('search_species')
-@action.uses(db, auth.user)
+@action.uses("stats.html",db, auth.user)
 def search_species():
     query = request.params.get('query', '').strip().lower()
     results = []
