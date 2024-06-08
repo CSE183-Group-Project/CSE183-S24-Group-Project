@@ -39,7 +39,8 @@ db.define_table('checklists',
                 Field('duration_minute')
             )
 
-db(db.checklists).delete()
+# this is my delete to update data to populate
+# db(db.observers).delete()
 if db(db.observers).isempty():
     with open('apps/birds/observers.csv', 'r') as f:
         reader = csv.reader(f)
