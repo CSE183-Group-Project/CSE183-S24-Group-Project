@@ -184,7 +184,7 @@ def checklist(path=None):
             details=False,
             editable=False,
             deletable=False,
-            post_action_buttons=[GridSelectButton(search_term, lat, lng)],
+            post_action_buttons=[GridSelectButton(search_term)],
             fields=[
                 db.species.common_name,
             ]
