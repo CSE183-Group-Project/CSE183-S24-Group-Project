@@ -39,13 +39,6 @@ db.define_table('checklists',
                 Field('duration_minute')
             )
 
-db(db.checklists).delete()
-if db(db.observers).isempty():
-    with open('apps/birds/observers.csv', 'r') as f:
-        reader = csv.reader(f)
-        for row in reader:
-            # print(row[0])
-            db.observers.insert(user_email=row[0],observer_id=row[1])
 
 if db(db.species).isempty():
     with open('apps/birds/species.csv', 'r') as f:
