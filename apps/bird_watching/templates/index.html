@@ -1,0 +1,62 @@
+[[extend 'layout.html']]
+
+<div class="section" id="app">
+  <h1 class="title"><i class="fa-solid fa-cube"></i> Welcome users! </h1>
+  <div class="has-text-centered">
+    <div class="button-container">
+      <a href="[[=URL('stats')]]" class="button is-link">My Birding</a>
+    </div>
+  </div>
+  <div id="autocomplete-container" class="field has-addons">
+    <div class="control">
+      <input id="species-autocomplete" class="input is-primary" type="text" placeholder="Select species">
+    </div>
+  </div>
+  <div id="map"></div> 
+</div>
+
+
+[[block page_styles]]
+<style>
+  .ui-autocomplete {
+      background: white;
+      border: 1px solid #ccc;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000 !important; 
+      position: absolute;
+  }
+  .ui-menu-item {
+      padding: 10px;
+      cursor: pointer;
+  }
+  .ui-menu-item:hover {
+      background: #f0f0f0;
+  }
+  #map {
+      height: 600px; 
+  }
+  .button-container .button {
+      margin-right: 10px; /* Adjust this value for the desired space */
+  }
+</style>
+[[end]]
+
+[[block page_scripts]]
+<script>
+  let get_stats_url = "[[=XML(get_stats_url)]]";
+  let get_species_details_url = "[[=XML(get_species_details_url)]]";
+  let get_trends_url = "[[=XML(get_trends_url)]]";
+  let search_species_url = "[[=XML('search_species_url')]]";
+</script>
+
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="/bird_watching/static/js/leaflet-heat.js"></script>
+<script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+<script src="/bird_watching/static/js/index.js"></script>
+[[end]]
