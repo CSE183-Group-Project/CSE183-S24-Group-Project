@@ -37,7 +37,11 @@ from pydal.validators import IS_INT_IN_RANGE
 from pydal import Field
 import json
 
-
+def safe_int(value, default=0):
+    try:
+        return int(value)
+    except ValueError:
+        return default
 url_signer = URLSigner(session)
 
 @action('index')
@@ -46,6 +50,65 @@ def index():
     return dict(
         my_callback_url = URL('my_callback', signer=url_signer),
     )
+
+@action('statistics')
+@action.uses('statistics.html', db, url_signer)
+def statistics():
+    ne_lat = request.params.get('ne_lat')
+    ne_lng = request.params.get('ne_lng')
+    sw_lat = request.params.get('sw_lat')
+    sw_lng = request.params.get('sw_lng')
+
+    if not all([ne_lat, ne_lng, sw_lat, sw_lng]):
+        abort(400, 'Missing coordinates')
+
+    try:
+        ne_lat = float(ne_lat)
+        ne_lng = float(ne_lng)
+        sw_lat = float(sw_lat)
+        sw_lng = float(sw_lng)
+    except ValueError:
+        abort(400, 'Invalid coordinates')
+
+
+    query = (db.checklists.latitude <= ne_lat) & (db.checklists.latitude >= sw_lat) & \
+            (db.checklists.longitude <= ne_lng) & (db.checklists.longitude >= sw_lng)
+
+    checklists = db(query).select()
+
+    sampling_event_ids = [row.sampling_event_identifier for row in checklists]
+
+    if not sampling_event_ids:
+        return dict(
+            species_counts=[],
+            ne_lat=ne_lat,
+            ne_lng=ne_lng,
+            sw_lat=sw_lat,
+            sw_lng=sw_lng,
+            my_callback_url = URL('my_callback', signer=url_signer),
+        )
+
+    sightings = db(db.sightings.sampling_event_identifier.belongs(sampling_event_ids)).select()
+
+    species_counts = {}
+    for sighting in sightings:
+        species = sighting.common_name
+        count = safe_int(sighting.observation_count)
+        if species not in species_counts:
+            species_counts[species] = 0
+        species_counts[species] += count
+
+    sorted_species_counts = sorted(species_counts.items(), key=lambda x: x[1], reverse=True)
+
+    return dict(
+        species_counts=sorted_species_counts,
+        ne_lat=ne_lat,
+        ne_lng=ne_lng,
+        sw_lat=sw_lat,
+        sw_lng=sw_lng,
+        my_callback_url = URL('my_callback', signer=url_signer),
+    )
+
 
 class GridSelectButton(object):
     def __init__(self):
@@ -157,6 +220,8 @@ def select(species_id=None):
         search_term=search_term,
     )
 
+
+
 @action('delete/<id>', method = ['GET', 'POST'])
 @action.uses(db, session, auth.user)
 def delete(id = None):
@@ -191,17 +256,35 @@ def mychecklist():
     )
     return dict(grid=grid)
 
-@action('get_checklist_data')
+@action('get_checklist_data', method=['GET'])
 @action.uses(db)
 def get_checklist_data():
-    species = request.params.get('species', '')
-    query = (db.checklists.id > 0)
+    species = request.params.get('species')
+    limit = None if species else int(request.params.get('limit', 50000))  
+    offset = None if species else int(request.params.get('offset', 0))
+
+    query = (db.sightings.id > 0)
     if species:
-        query &= (db.sightings.common_name == species) & (db.checklists.sampling_event_identifier == db.sightings.sampling_event_identifier)
+        query &= (db.sightings.common_name == species)
     
-    rows = db(query).select(db.checklists.latitude, db.checklists.longitude, db.sightings.observation_count)
-    data = [{'lat': row.checklists.latitude, 'lng': row.checklists.longitude, 'count': row.sightings.observation_count} for row in rows]
-    return json.dumps(data)
+    if limit is not None and offset is not None:
+        sightings = db(query).select(limitby=(offset, offset + limit))
+    else:
+        sightings = db(query).select()
+
+    checklist_data = []
+    for sighting in sightings:
+        checklist = db(db.checklists.sampling_event_identifier == sighting.sampling_event_identifier).select().first()
+        if checklist:
+            checklist_data.append({
+                'lat': checklist.latitude,
+                'lng': checklist.longitude,
+                'count': sighting.observation_count
+            })
+    
+    return dict(data=checklist_data)
+
+
 
 @action('get_species')
 @action.uses(db)
@@ -211,8 +294,9 @@ def get_species():
     return json.dumps(data)
 
 
+
 @action('my_callback')
-@action.uses() # Add here things like db, auth, etc.
+@action.uses()
 def my_callback():
     # The return value should be a dictionary that will be sent as JSON.
     return dict(my_value=3)

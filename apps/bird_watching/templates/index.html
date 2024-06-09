@@ -3,7 +3,10 @@
 <div class="section" id="app">
   <h1 class="title"><i class="fa-solid fa-cube"></i> Welcome users! </h1>
   <div class="has-text-centered">
-    <a href="[[=URL('checklist')]]" class="button is-link">Go to Bird Species Checklist</a>
+    <div class="button-container">
+      <a href="[[=URL('checklist')]]" class="button is-link">Go to Bird Species Checklist</a>
+      <button id="stats-button" class="button is-primary">Statistics on Region</button>
+    </div>
   </div>
   <div id="autocomplete-container" class="field has-addons">
     <div class="control">
@@ -33,6 +36,9 @@
   #map {
       height: 600px; 
   }
+  .button-container .button {
+      margin-right: 10px; /* Adjust this value for the desired space */
+  }
 </style>
 [[end]]
 
@@ -46,5 +52,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
 integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="/bird_watching/static/js/leaflet-heat.js"></script>
+<script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
 <script src="/bird_watching/static/js/index.js"></script>
 [[end]]

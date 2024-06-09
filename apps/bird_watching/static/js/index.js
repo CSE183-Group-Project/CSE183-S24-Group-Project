@@ -1,11 +1,9 @@
 "use strict";
 
-
-let app = {
-};
+let app = {};
 
 app.init = () => {
-    app.map = L.map('map').setView([51.505, -0.09], 13);
+    app.map = L.map('map');
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -15,11 +13,11 @@ app.init = () => {
         const url = `/bird_watching/get_checklist_data?species=${species}`;
         axios.get(url)
             .then(response => {
-                const data = response.data;
+                const data = response.data.data;
                 if (app.heatmapLayer) {
                     app.map.removeLayer(app.heatmapLayer);
                 }
-                const heatmapData = data.map(d => [d.lat, d.lng, d.count]);
+                const heatmapData = data.slice(1).map(d => [d.lat, d.lng, d.count]);
                 app.heatmapLayer = L.heatLayer(heatmapData, {
                     radius: 20,
                     blur: 15,
@@ -73,6 +71,44 @@ app.init = () => {
     } else {
         console.error('Geolocation is not supported by this browser.');
     }
+
+    // Initialize Leaflet Draw
+    const drawnItems = new L.FeatureGroup();
+    app.map.addLayer(drawnItems);
+
+    const drawControl = new L.Control.Draw({
+        draw: {
+            polyline: false,
+            polygon: false,
+            circle: false,
+            marker: false,
+            circlemarker: false,
+            rectangle: true
+        },
+        edit: {
+            featureGroup: drawnItems,
+            remove: true
+        }
+    });
+
+    app.map.addControl(drawControl);
+
+    app.map.on(L.Draw.Event.CREATED, event => {
+        const layer = event.layer;
+        drawnItems.addLayer(layer);
+        app.selectedBounds = layer.getBounds();
+    });
+
+    document.getElementById('stats-button').addEventListener('click', () => {
+        if (app.selectedBounds) {
+            const ne = app.selectedBounds.getNorthEast();
+            const sw = app.selectedBounds.getSouthWest();
+            const url = `/bird_watching/statistics?ne_lat=${ne.lat}&ne_lng=${ne.lng}&sw_lat=${sw.lat}&sw_lng=${sw.lng}`;
+            window.location.href = url;
+        } else {
+            alert('Please draw a rectangle on the map to select a region.');
+        }
+    });
 };
 
 // Define the Vue.js app data and methods
@@ -101,4 +137,3 @@ app.load_data = function () {
 }
 
 app.load_data();
-

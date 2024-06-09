@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-timestamp: 2024-06-03T12:17:58.221176
-=======
-timestamp: 2024-06-03T17:01:47.137852
->>>>>>> origin/Ivan
+timestamp: 2024-06-09T08:15:58.863807
 CREATE TABLE "py4web_session"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "rkey" CHAR(512),
@@ -12,11 +8,7 @@ CREATE TABLE "py4web_session"(
     "expires_on" TIMESTAMP
 );
 success!
-<<<<<<< HEAD
-timestamp: 2024-06-03T12:17:58.222551
-=======
-timestamp: 2024-06-03T17:01:47.141781
->>>>>>> origin/Ivan
+timestamp: 2024-06-09T08:15:58.865093
 CREATE TABLE "auth_user"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "email" CHAR(512) UNIQUE,
@@ -29,57 +21,40 @@ CREATE TABLE "auth_user"(
     "past_passwords_hash" TEXT
 );
 success!
-<<<<<<< HEAD
-timestamp: 2024-06-03T12:17:58.223552
-=======
-timestamp: 2024-06-03T17:01:47.144873
->>>>>>> origin/Ivan
+timestamp: 2024-06-09T08:15:58.865889
 CREATE TABLE "auth_user_tag_groups"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "tagpath" CHAR(512),
     "record_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE ON UPDATE CASCADE  
 );
 success!
-<<<<<<< HEAD
-timestamp: 2024-06-03T12:17:58.225219
-=======
-timestamp: 2024-06-03T17:01:47.148959
->>>>>>> origin/Ivan
+timestamp: 2024-06-09T08:15:58.867281
 CREATE TABLE "species"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "common_name" CHAR(512)
 );
 success!
-<<<<<<< HEAD
-timestamp: 2024-06-03T12:17:58.225907
-=======
-timestamp: 2024-06-03T17:01:47.150546
->>>>>>> origin/Ivan
+timestamp: 2024-06-09T08:15:58.867835
+CREATE TABLE "checklists"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "sampling_event_identifier" CHAR(512),
+    "latitude" DOUBLE,
+    "longitude" DOUBLE,
+    "observation_date" DATE,
+    "time_observation" TIME,
+    "observer_id" INTEGER,
+    "duration_minute" INTEGER
+);
+success!
+timestamp: 2024-06-09T08:15:58.868305
 CREATE TABLE "sightings"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "sampling_event_identifier" CHAR(512),
     "common_name" CHAR(512),
-    "observation_count" CHAR(512)
+    "observation_count" INTEGER
 );
 success!
-<<<<<<< HEAD
-timestamp: 2024-06-03T12:17:58.226667
-=======
-timestamp: 2024-06-03T17:01:47.152272
->>>>>>> origin/Ivan
-CREATE TABLE "checklists"(
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "sampling_event_identifier" CHAR(512),
-    "latitude" CHAR(512),
-    "longitude" CHAR(512),
-    "observation_date" CHAR(512),
-    "time_observation" CHAR(512),
-    "observer_id" CHAR(512),
-    "duration_minute" CHAR(512)
-);
-success!
-<<<<<<< HEAD
-timestamp: 2024-06-04T23:16:18.753058
+timestamp: 2024-06-09T08:15:58.868758
 CREATE TABLE "User_bird_data"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "userid" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE ON UPDATE CASCADE  ,
@@ -87,5 +62,3 @@ CREATE TABLE "User_bird_data"(
     "bird_count" INTEGER
 );
 success!
-=======
->>>>>>> origin/Ivan

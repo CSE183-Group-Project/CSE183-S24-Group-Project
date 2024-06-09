@@ -1,0 +1,72 @@
+[[extend 'layout.html']]
+
+<div class="section">
+    <div class="container">
+        <h1 class="title">Statistics for Selected Region</h1>
+        <div class="has-text-centered">
+            <a href="[[=URL('index')]]" class="button is-link">Go to Map</a>
+        </div>
+        <div class="table-container">
+            <table class="table is-striped is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Species</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    [[for species, count in species_counts:]]
+                    <tr>
+                        <td>[[=species]]</td>
+                        <td>[[=count]]</td>
+                    </tr>
+                    [[pass]]
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+[[block page_styles]]
+<style>
+    .section {
+        padding: 2rem 1.5rem;
+    }
+
+    .table-container {
+        margin-top: 2rem;
+    }
+
+    .table th {
+        background-color: #3273dc;
+        color: white;
+        text-align: left;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    .title {
+        font-size: 2rem;
+        color: #3273dc;
+        margin-bottom: 1.5rem;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 1rem;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>
+[[end]]
+
+[[block page_scripts]]
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="application/json" id="species-data">
+    {{=response.json(species_counts)}}
+</script>
+[[end]]
