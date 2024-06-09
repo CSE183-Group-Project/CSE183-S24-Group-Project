@@ -62,3 +62,11 @@ CREATE TABLE "User_bird_data"(
     "bird_count" INTEGER
 );
 success!
+timestamp: 2024-06-09T10:07:04.594117
+ALTER TABLE "User_bird_data" ADD "latitude" DOUBLE;
+timestamp: 2024-06-09T10:07:04.594801
+ALTER TABLE "User_bird_data" ADD "longitude" DOUBLE;
+success!
+timestamp: 2024-06-09T13:05:31.723965
+ALTER TABLE "User_bird_data" ADD "table_id" INTEGER;
+success!

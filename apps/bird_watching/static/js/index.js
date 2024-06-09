@@ -1,8 +1,12 @@
 "use strict";
 
-let app = {};
+let app = {
+    currentMarker: null
+};
 
 app.init = () => {
+    let log = null;
+    let lat = null;
     app.map = L.map('map');
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -62,9 +66,6 @@ app.init = () => {
             const userLocation = [lat, lon];
 
             app.map.setView(userLocation, 13);
-
-            L.marker(userLocation).addTo(app.map)
-                .openPopup();
         }, error => {
             console.error("Error getting user's location: ", error);
         });
@@ -108,6 +109,22 @@ app.init = () => {
         } else {
             alert('Please draw a rectangle on the map to select a region.');
         }
+    });
+
+    app.map.on('click', function(e) {
+        const latlng = e.latlng;
+       
+        // Remove existing marker if present
+        if (app.currentMarker) {
+            app.map.removeLayer(app.currentMarker);
+        }
+
+        // Add new marker
+        app.currentMarker = L.marker(latlng).addTo(app.map);
+        lat = latlng.lat;
+        log = latlng.lng;
+        const url = `/bird_watching/checklist?lat=${lat}&lng=${log}`;
+        app.currentMarker.bindPopup(`<a href="${url}" class="button is-link">Enter Checklist</a>`).openPopup();
     });
 };
 

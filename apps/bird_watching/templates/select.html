@@ -15,13 +15,21 @@
                     </div>
                     <div class="column is-one-third">
                         <h3 class="title is-5">Current Count</h3>
-                        <p class="subtitle is-6">[[=bird_count]]</p>
+                        <form id="update-count-form" method="POST" class="field has-addons">
+                            <div class="control">
+                                <input class="input" type="number" name="bird_count" value="[[=bird_count]]" min="0" onchange="submitCountForm()">
+                            </div>
+                            <input type="hidden" name="search_term" value="[[=search_term]]">
+                            <input type="hidden" name="update_count" value="1">
+                        </form>
                     </div>
                     <div class="column is-one-third">
-                        <form method="POST">
-                            <input type="hidden" name="increment" value="1">
-                            <input type="hidden" name="search_term" value="[[=search_term]]">
-                            <button type="submit" class="button is-primary">Increment Count by 1</button>
+                        <form method="POST" class="field has-addons">
+                            <div class="control">
+                                <input type="hidden" name="increment" value="1">
+                                <input type="hidden" name="search_term" value="[[=search_term]]">
+                                <button type="submit" class="button is-primary">Increment Count</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -35,5 +43,11 @@
             </div>
         </div>
     </section>
+
+    <script>
+        function submitCountForm() {
+            document.getElementById('update-count-form').submit();
+        }
+    </script>
 </body>
 </html>

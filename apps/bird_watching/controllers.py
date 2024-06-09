@@ -111,8 +111,8 @@ def statistics():
 
 
 class GridSelectButton(object):
-    def __init__(self):
-        self.url = URL('select') 
+    def __init__(self, search_term=None):
+        self.url = URL('select', vars={ 'search_term': search_term})
         self.append_id = True
         self.additional_classes = 'button is-primary'
         self.icon = 'fa-Select'
@@ -120,9 +120,19 @@ class GridSelectButton(object):
         self.message = None
         self.onClick = None
 
+class GridEditButton(object):
+    def __init__(self, search_term=None):
+        self.url = URL('select', vars={'search_term': search_term})
+        self.append_id = True
+        self.additional_classes = "grid-edit-button button is-primary"
+        self.icon = 'fa-pencil'
+        self.text = 'Edit'
+        self.message = None
+        self.onclick = None
+
 class GridDeletebutton(object):
     def __init__(self):
-        self.url = URL('delete')
+        self.url = URL('delete') 
         self.append_id = True
         self.additional_classes = "grid-delete-button button is-danger"
         self.icon = 'fa-pencil'
@@ -136,6 +146,8 @@ class GridDeletebutton(object):
 @action.uses('checklist.html', db, auth.user, url_signer)
 def checklist(path=None):
     user = auth.current_user
+    lng = request.params.get('lng')
+    lat = request.params.get('lat')
 
     if not path:
         path = URL('submit_checklist', signer=url_signer)
@@ -172,7 +184,7 @@ def checklist(path=None):
             details=False,
             editable=False,
             deletable=False,
-            post_action_buttons=[GridSelectButton()],
+            post_action_buttons=[GridSelectButton(search_term, lat, lng)],
             fields=[
                 db.species.common_name,
             ]
@@ -187,15 +199,18 @@ def checklist(path=None):
     )
 
 
-
-@action('select/<species_id>', method=['GET', 'POST'])
+@action('select', method=['GET', 'POST'])
 @action.uses('select.html', db, auth.user, session)
 def select(species_id=None):
     user = auth.current_user
-    species = db.species(species_id) or redirect(URL('checklist'))
-
     search_term = request.query.get('search_term', '')
-
+    print(search_term)
+    values = search_term.split('/')
+    search_item = values[0]
+    species_id = int(values[1])
+  
+    species = db.species(species_id) or redirect(URL('checklist'))
+    
     bird_data = db((db.User_bird_data.Userid == user.get('id')) & 
                    (db.User_bird_data.bird_name == species.common_name)).select().first()
 
@@ -203,23 +218,31 @@ def select(species_id=None):
         bird_data_id = db.User_bird_data.insert(
             Userid=user.get('id'),
             bird_name=species.common_name,
-            bird_count=0
+            table_id = species_id,
+            bird_count=0,
         )
         bird_data = db.User_bird_data(bird_data_id)
 
     if request.forms.get('increment'):
         bird_data.update_record(bird_count=bird_data.bird_count + 1)
-        redirect(URL('select', species_id, vars=dict(search_term=search_term)))
+        
+
+    if request.forms.get('update_count'):
+        new_count = request.forms.get('bird_count')
+        if new_count.isdigit() and int(new_count) >= 0:
+            bird_data.update_record(bird_count=int(new_count))
+        redirect(URL('select', vars=dict(search_term=search_term)))
 
     if request.forms.get('submit_record'):
-        redirect(URL('checklist', vars=dict(search_term=search_term)))
+        if bird_data.bird_count == 0:
+            db(db.User_bird_data.id == bird_data.id).delete()
+        redirect(URL('checklist', vars=dict(search_term=search_item)))
 
     return dict(
         species_name=species.common_name,
         bird_count=bird_data.bird_count,
         search_term=search_term,
     )
-
 
 
 @action('delete/<id>', method = ['GET', 'POST'])
@@ -237,7 +260,6 @@ def mychecklist():
     user = auth.current_user
     query = db.User_bird_data.Userid == user.get('id')
 
-
     grid = Grid(
         path=URL('mychecklist'),
         query=query,
@@ -247,7 +269,9 @@ def mychecklist():
         editable=False,
         deletable=False,
         details=False,
-        pre_action_buttons=[GridDeletebutton()],
+        pre_action_buttons=[            
+            GridDeletebutton()
+        ],
         rows_per_page=100,
         fields=[
             db.User_bird_data.bird_name,

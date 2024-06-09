@@ -38,7 +38,10 @@ db.define_table('sightings',
 db.define_table(
     'User_bird_data',
     Field('Userid', 'reference auth_user'),
+    Field('table_id', 'integer'),
     Field('bird_name'),
+    Field('latitude', 'double'), 
+    Field('longitude', 'double'),
     Field('bird_count', 'integer')
 )
 
