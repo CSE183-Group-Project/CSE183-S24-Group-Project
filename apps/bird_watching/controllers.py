@@ -39,16 +39,19 @@ url_signer = URLSigner(session)
 def index():
     return dict(
         # COMPLETE: return here any signed URLs you need.
-        get_stats_url = URL('get_stats', signer=url_signer),
-        get_species_details_url = URL('get_species_details', signer=url_signer),
-        get_trends_url = URL('get_trends'), signer=url_signer,
-        search_species_url = URL('search_species', signer=url_signer),
+        get_stats_url = URL('get_stats'),
+        get_species_details_url = URL('get_species_details'),
+        get_trends_url = URL('get_trends'),
+        search_species_url = URL('search_species'),
     )
 
 @action('stats')
-@action.uses('stats.html')
+@action.uses('stats.html', db, auth.user, session)
 def stats():
-    return dict()
+    user = auth.current_user
+    if not user:
+        redirect(URL('index'))
+    return dict(user=user)
 
 
 @action('get_stats/<order>')
