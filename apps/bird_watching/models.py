@@ -42,10 +42,6 @@ db.define_table('checklists',
 
 
 # this is my delete to update data to populate
-db(db.species).delete()
-db(db.sightings).delete()
-db(db.checklists).delete()
-db(db.observers).delete()
 
 if db(db.species).isempty():
     with open('apps/bird_watching/species.csv', 'r') as f:
@@ -66,12 +62,12 @@ if db(db.checklists).isempty():
         for row in reader:
             db.checklists.insert(sampling_event_identifier=row[0], latitude=row[1], longitude=row[2], observation_date=row[3], time_observation=row[4], observer_id=row[5], duration_minute=row[6])
 
-if db(db.observers).isempty():
-    with open('apps/bird_watching/observers.csv', 'r') as f:
-        reader = csv.reader(f)
-        for row in reader:
-            # print(row[0])
-            db.observers.insert(user_email=row[0],observer_id=row[1])
+# if db(db.observers).isempty():
+#     with open('apps/bird_watching/observers.csv', 'r') as f:
+#         reader = csv.reader(f)
+#         for row in reader:
+#             # print(row[0])
+#             db.observers.insert(user_email=row[0],observer_id=row[1])
 
 ## always commit your models to avoid problems later
 db.commit()

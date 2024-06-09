@@ -17,10 +17,10 @@
 
 <div class="section" id="app" v-cloak>
   <!-- Put here your Vue.js template -->
-  <h1 class="title"><i class="fa-solid fa-cube"></i> Bird Stats</h1>
-  <nav><button class="button" @click="getStat">Stats</button><button class="button" @click="getTrend">Trends</button></nav>
+  <h1 class="title"><i class="fa-solid fa-cube"></i> My Birding</h1>
+  <nav><button class="button is-primary" @click="getStat">Stats</button><button class="button is-primary" @click="getTrend">Trends</button></nav>
   <div>
-    <input type="text" v-model="search_query" placeholder="Search species">
+    <input type="text" class="input is-medium" v-model="search_query" placeholder="Search species">
     <button class = button @click="searchSpecies">Search</button>
   </div>
   <div class = "is-flex is-flex-direction-row">
@@ -35,8 +35,8 @@
     </div>
   </div>
   <div :class="{'is-hidden' : search_query.length > 0}">
-    <button class = button @click="getStat('recent')">Recently Seen</button>
-    <button class = button @click="getStat('first')">First Seen</button>
+    <button class="button is-text" @click="getStat('recent')">Recently Seen</button>
+    <button class="button is-text" @click="getStat('first')">First Seen</button>
   </div>
   <ol :class="{'is-hidden' : search_query.length > 0}">
     <template v-for="bird in stats">

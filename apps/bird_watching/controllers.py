@@ -39,10 +39,10 @@ url_signer = URLSigner(session)
 def index():
     return dict(
         # COMPLETE: return here any signed URLs you need.
-        get_stats_url = URL('get_stats'),
-        get_species_details_url = URL('get_species_details'),
-        get_trends_url = URL('get_trends'),
-        search_species_url = URL('search_species'),
+        get_stats_url = URL('get_stats', signer=url_signer),
+        get_species_details_url = URL('get_species_details', signer=url_signer),
+        get_trends_url = URL('get_trends'), signer=url_signer,
+        search_species_url = URL('search_species', signer=url_signer),
     )
 
 @action('stats')
