@@ -132,7 +132,7 @@ class GridEditButton(object):
 
 class GridDeletebutton(object):
     def __init__(self):
-        self.url = URL('delete') 
+        self.url = URL('delete')
         self.append_id = True
         self.additional_classes = "grid-delete-button button is-danger"
         self.icon = 'fa-pencil'
@@ -140,7 +140,7 @@ class GridDeletebutton(object):
         self.message = 'Are you sure you want to delete this record'
         self.onclick = None
 
-    
+
 @action('checklist')
 @action('contact_requests/<path:path>')
 @action.uses('checklist.html', db, auth.user, url_signer)
@@ -151,13 +151,13 @@ def checklist(path=None):
 
     if not path:
         path = URL('submit_checklist', signer=url_signer)
-    
+
     search_term = request.query.get('search_term', '').strip()
 
     if request.forms.get('increment'):
         species_id = request.forms.get('increment')
         species = db.species(species_id) or redirect(URL('checklist', vars={'search_term': search_term}))
-        bird_data = db((db.User_bird_data.Userid == user.get('id')) & 
+        bird_data = db((db.User_bird_data.Userid == user.get('id')) &
                        (db.User_bird_data.bird_name == species.common_name)).select().first()
 
         if not bird_data:
@@ -189,7 +189,7 @@ def checklist(path=None):
                 db.species.common_name,
             ]
         )
-   
+
     return dict(
         grid=grid,
         user=user,
@@ -208,10 +208,10 @@ def select(species_id=None):
     values = search_term.split('/')
     search_item = values[0]
     species_id = int(values[1])
-  
+
     species = db.species(species_id) or redirect(URL('checklist'))
-    
-    bird_data = db((db.User_bird_data.Userid == user.get('id')) & 
+
+    bird_data = db((db.User_bird_data.Userid == user.get('id')) &
                    (db.User_bird_data.bird_name == species.common_name)).select().first()
 
     if not bird_data:
@@ -225,7 +225,7 @@ def select(species_id=None):
 
     if request.forms.get('increment'):
         bird_data.update_record(bird_count=bird_data.bird_count + 1)
-        
+
 
     if request.forms.get('update_count'):
         new_count = request.forms.get('bird_count')
@@ -252,7 +252,11 @@ def delete(id = None):
     if r:
         db(db.User_bird_data.id == id).delete()
     redirect(URL('mychecklist'))
-    
+
+@action('location')
+@action.uses('location.html')
+def location():
+    return dict()
 
 @action('mychecklist', method=['GET', 'POST'])
 @action.uses('mychecklist.html', db, auth.user, session, url_signer)
@@ -269,7 +273,7 @@ def mychecklist():
         editable=False,
         deletable=False,
         details=False,
-        pre_action_buttons=[            
+        pre_action_buttons=[
             GridDeletebutton()
         ],
         rows_per_page=100,
@@ -284,13 +288,13 @@ def mychecklist():
 @action.uses(db)
 def get_checklist_data():
     species = request.params.get('species')
-    limit = None if species else int(request.params.get('limit', 50000))  
+    limit = None if species else int(request.params.get('limit', 50000))
     offset = None if species else int(request.params.get('offset', 0))
 
     query = (db.sightings.id > 0)
     if species:
         query &= (db.sightings.common_name == species)
-    
+
     if limit is not None and offset is not None:
         sightings = db(query).select(limitby=(offset, offset + limit))
     else:
@@ -305,7 +309,7 @@ def get_checklist_data():
                 'lng': checklist.longitude,
                 'count': sighting.observation_count
             })
-    
+
     return dict(data=checklist_data)
 
 
@@ -324,4 +328,3 @@ def get_species():
 def my_callback():
     # The return value should be a dictionary that will be sent as JSON.
     return dict(my_value=3)
-

@@ -1,0 +1,134 @@
+[[extend 'layout.html']]
+<!doctype html>
+<html>
+    <head>
+        <title>Bird Species Charts</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+        />
+    </head>
+    <body>
+        <section class="section">
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="column is-three-quarters">
+                        <h2 class="title has-text-centered">
+                            Number of Bird Sightings Over Time
+                        </h2>
+                        <canvas id="birdChart"></canvas>
+                    </div>
+                </div>
+                <div class="columns is-centered">
+                    <div class="column is-half">
+                        <h2 class="title has-text-centered">
+                            Most Common Species Seen
+                        </h2>
+                        <canvas id="speciesChart"></canvas>
+                    </div>
+                </div>
+                <div class="columns is-centered">
+                    <div class="column is-half has-text-centered">
+                        <a href="/bird_watching/index" class="button is-link">
+                            Back to Main Page
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <script>
+            // Generate bird sightings data for each month
+            const labels = [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December",
+            ];
+            const data = labels.map(() => Math.floor(Math.random() * 20) + 1);
+            const ctx = document.getElementById("birdChart").getContext("2d");
+            const chart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Number of Birds",
+                            data: data,
+                            backgroundColor: "rgba(75, 192, 192, 0.2)",
+                            borderColor: "rgba(75, 192, 192, 1)",
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                        },
+                    },
+                },
+            });
+
+            const birdSpecies = [
+                "Sparrow",
+                "Robin",
+                "Blue Jay",
+                "Cardinal",
+                "Finch",
+                "Chickadee",
+                "Woodpecker",
+                "Dove",
+                "Wren",
+                "Owl",
+            ];
+            const speciesLabels = [];
+            const speciesData = [];
+
+            for (let i = 0; i < 5; i++) {
+                const randomIndex = Math.floor(
+                    Math.random() * birdSpecies.length,
+                );
+                const selectedSpecies = birdSpecies[randomIndex];
+                speciesLabels.push(selectedSpecies);
+                speciesData.push(Math.floor(Math.random() * 30) + 1);
+                birdSpecies.splice(randomIndex, 1);
+            }
+
+            const speciesCtx = document
+                .getElementById("speciesChart")
+                .getContext("2d");
+            const speciesChart = new Chart(speciesCtx, {
+                type: "bar",
+                data: {
+                    labels: speciesLabels,
+                    datasets: [
+                        {
+                            label: "Count",
+                            data: speciesData,
+                            backgroundColor: "rgba(75, 192, 192, 0.6)",
+                            borderColor: "rgba(75, 192, 192, 1)",
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            precision: 0,
+                        },
+                    },
+                },
+            });
+        </script>
+    </body>
+</html>
