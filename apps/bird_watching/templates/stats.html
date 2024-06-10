@@ -14,8 +14,10 @@
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <link rel="stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.0/css/bulma.min.css">
 
-
 <div class="section" id="app" v-cloak>
+    <div class="has-text-centered">
+        <a href="[[=URL('index')]]" class="button is-link">Go to Map</a>
+    </div>
   <!-- Put here your Vue.js template -->
   <h1 class="title"><i class="fa-solid fa-cube"></i> Bird Stats</h1>
   <nav><button class="button" @click="getStat">Stats</button><button class="button" @click="getTrend">Trends</button></nav>
