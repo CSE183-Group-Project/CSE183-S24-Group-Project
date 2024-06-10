@@ -12,7 +12,7 @@ app.init = () => {
     }).addTo(app.map);
 
     app.updateHeatmap = (species = '') => {
-        const url = `/bird_watching/get_checklist_data?species=${species}`;
+        const url = `${get_checklist_data_url}?species=${species}`//`/bird_watching/get_checklist_data?species=${species}`;
         axios.get(url)
             .then(response => {
                 const data = response.data;

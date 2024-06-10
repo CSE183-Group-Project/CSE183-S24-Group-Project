@@ -47,8 +47,8 @@ def index():
 @action('get_checklist_data', method='GET')
 @action.uses(db)
 def get_checklist_data():
-    species = request.params.get('species', '')
-    query = (db.checklists.id > 0)
+    species = request.params.get('species', '') #('species', '')
+    query = (db.checklists.id > 0) #(db.checklists.id > 0)
     if species:
         query &= (db.sightings.common_name == species) & (db.checklists.sampling_event_identifier == db.sightings.sampling_event_identifier)
     
