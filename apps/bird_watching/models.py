@@ -16,6 +16,10 @@ def get_time():
 
 
 ### Define your table below
+db.define_table('observers', 
+                Field('observer_id'),
+                Field('user_email'))
+
 db.define_table('species', 
                 Field('common_name')
                 )
@@ -50,6 +54,14 @@ def safe_int(value, default=0):
         return int(value)
     except ValueError:
         return default
+
+if db(db.observers).isempty():
+    with open('apps/bird_watching/data/observers.csv', 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            # print(row[0])
+            db.observers.insert(user_email=row[0],observer_id=row[1])
+
 
 if db(db.species).isempty():
     with open('apps/bird_watching/data/species.csv', 'r') as f:
