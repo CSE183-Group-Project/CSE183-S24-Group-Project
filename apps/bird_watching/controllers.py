@@ -345,6 +345,9 @@ def stats():
 @action.uses(db, auth.user)
 def get_stats(order="recent"):
     user_email = get_user_email()
+    print("==========")
+    print(user_email)
+    print(db.observers)
     observer_id = db(db.observers.user_email == user_email).select().first()
     if observer_id:
         observer_id = observer_id.observer_id
@@ -370,6 +373,7 @@ def get_species_details(species_name=None):
     if observer_id:
         observer_id = observer_id.observer_id
     else:
+        print("xxxxjhfjdhjdhfjhsjfh")
         observer_id = None
     # Fetch the sightings of the given species by the user
     sightings = db((db.sightings.sampling_event_identifier == db.checklists.sampling_event_identifier) &
