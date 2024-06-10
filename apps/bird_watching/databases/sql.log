@@ -1,4 +1,4 @@
-timestamp: 2024-06-09T08:15:58.863807
+timestamp: 2024-06-10T09:06:59.417824
 CREATE TABLE "py4web_session"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "rkey" CHAR(512),
@@ -8,7 +8,7 @@ CREATE TABLE "py4web_session"(
     "expires_on" TIMESTAMP
 );
 success!
-timestamp: 2024-06-09T08:15:58.865093
+timestamp: 2024-06-10T09:06:59.421349
 CREATE TABLE "auth_user"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "email" CHAR(512) UNIQUE,
@@ -21,20 +21,20 @@ CREATE TABLE "auth_user"(
     "past_passwords_hash" TEXT
 );
 success!
-timestamp: 2024-06-09T08:15:58.865889
+timestamp: 2024-06-10T09:06:59.422803
 CREATE TABLE "auth_user_tag_groups"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "tagpath" CHAR(512),
     "record_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE ON UPDATE CASCADE  
 );
 success!
-timestamp: 2024-06-09T08:15:58.867281
+timestamp: 2024-06-10T09:06:59.425440
 CREATE TABLE "species"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "common_name" CHAR(512)
 );
 success!
-timestamp: 2024-06-09T08:15:58.867835
+timestamp: 2024-06-10T09:06:59.426275
 CREATE TABLE "checklists"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "sampling_event_identifier" CHAR(512),
@@ -46,7 +46,7 @@ CREATE TABLE "checklists"(
     "duration_minute" INTEGER
 );
 success!
-timestamp: 2024-06-09T08:15:58.868305
+timestamp: 2024-06-10T09:06:59.426940
 CREATE TABLE "sightings"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "sampling_event_identifier" CHAR(512),
@@ -54,19 +54,21 @@ CREATE TABLE "sightings"(
     "observation_count" INTEGER
 );
 success!
-timestamp: 2024-06-09T08:15:58.868758
+timestamp: 2024-06-10T09:06:59.427731
 CREATE TABLE "User_bird_data"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "userid" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE ON UPDATE CASCADE  ,
+    "table_id" INTEGER,
     "bird_name" CHAR(512),
+    "latitude" DOUBLE,
+    "longitude" DOUBLE,
     "bird_count" INTEGER
 );
 success!
-timestamp: 2024-06-09T10:07:04.594117
-ALTER TABLE "User_bird_data" ADD "latitude" DOUBLE;
-timestamp: 2024-06-09T10:07:04.594801
-ALTER TABLE "User_bird_data" ADD "longitude" DOUBLE;
-success!
-timestamp: 2024-06-09T13:05:31.723965
-ALTER TABLE "User_bird_data" ADD "table_id" INTEGER;
+timestamp: 2024-06-10T09:06:59.428352
+CREATE TABLE "observers"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "observer_id" CHAR(512),
+    "user_email" CHAR(512)
+);
 success!
