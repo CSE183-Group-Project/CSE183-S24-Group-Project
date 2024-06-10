@@ -353,16 +353,6 @@ def get_stats(order="recent"):
                                                                                "obs198637", "obs2265043", "obs960939", 
                                                                                "obs278374", "obs1150525", "obs507632", 
                                                                                "obs61008"][idx])
-    if user_email != None:
-        if user_email not in list(db(db.observers).select("user_email")):
-            idx = 0;
-            for ltr in user_email:
-                idx+=ord(ltr)
-            idx = idx%10
-            db.observers.insert(user_email = user_email, observer_id = ["obs1644106", "obs50219", "obs1171407", 
-                                                                               "obs198637", "obs2265043", "obs960939", 
-                                                                               "obs278374", "obs1150525", "obs507632", 
-                                                                               "obs61008"][idx])
     observer_id = db(db.observers.user_email == user_email).select().first()
     if observer_id:
         observer_id = observer_id.observer_id
