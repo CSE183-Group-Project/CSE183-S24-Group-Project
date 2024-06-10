@@ -15,11 +15,11 @@ app.init = () => {
         const url = `/bird_watching/get_checklist_data?species=${species}`//`${get_checklist_data_url}?species=${species}`; // didn't work
         axios.get(url)
             .then(response => {
-                const data = response.data;
+                const data = response.data.data;
                 if (app.heatmapLayer) {
                     app.map.removeLayer(app.heatmapLayer);
                 }
-                const heatmapData = data.map(d => [d.lat, d.lng, d.count]);
+                const heatmapData = data.slice(1).map(d => [d.lat, d.lng, d.count]);
                 app.heatmapLayer = L.heatLayer(heatmapData, {
                     radius: 20,
                     blur: 15,
@@ -81,7 +81,8 @@ app.init = () => {
     // Init draw control for FeatureGroup component
     let drawControl = new L.Control.Draw({
         edit: {
-            featureGroup: app.drawnItems
+            featureGroup: app.drawnItems,
+            remove: true,
         },
         draw: {
             rectangle: true,
@@ -95,8 +96,20 @@ app.init = () => {
     app.map.addControl(drawControl);
 
     app.map.on(L.Draw.Event.CREATED, function(event) {
-        let layer = event.layer;
+        const layer = event.layer;
         app.drawnItems.addLayer(layer);
+        app.selectedBouds = layer.getBounds();
+    });
+
+    document.getElementById('stats-button').addEventListener('click', () => {
+        if (app.selectedBouds) {
+            const ne = app.selectedBouds.getNorthEast();
+            const sw = app.selectedBouds.getSouthWest();
+            const url = `/bird_watching/statistics?ne_lat=${ne.lat}&new_lng=${ne.lng}&sw_lat=${sw.lat}&sw_lng=${sw.lng}`;
+            window.location.href = url;
+        } else {
+            alert('Please draw a rectangle on the map to select a region.');
+        }
     })
 };
 
