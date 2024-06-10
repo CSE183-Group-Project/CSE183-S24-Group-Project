@@ -353,6 +353,16 @@ def get_stats(order="recent"):
                                                                                "obs198637", "obs2265043", "obs960939", 
                                                                                "obs278374", "obs1150525", "obs507632", 
                                                                                "obs61008"][idx])
+    if user_email != None:
+        if user_email not in list(db(db.observers).select("user_email")):
+            idx = 0;
+            for ltr in user_email:
+                idx+=ord(ltr)
+            idx = idx%10
+            db.observers.insert(user_email = user_email, observer_id = ["obs1644106", "obs50219", "obs1171407", 
+                                                                               "obs198637", "obs2265043", "obs960939", 
+                                                                               "obs278374", "obs1150525", "obs507632", 
+                                                                               "obs61008"][idx])
     observer_id = db(db.observers.user_email == user_email).select().first()
     if observer_id:
         observer_id = observer_id.observer_id
@@ -368,7 +378,40 @@ def get_stats(order="recent"):
     if order == "first":
         species_list.reverse() 
     return dict(species_list=species_list)
+
+# @action('get_stats/<order>')
+# @action.uses(db, auth.user)
+# def get_stats(order="recent"):
+#     user_email = get_user_email()
+#     print(f"User email: {user_email}")
     
+#     observer = db(db.observers.user_email == user_email).select().first()
+#     if observer:
+#         observer_id = observer.observer_id
+#         print(f"Observer ID: {observer_id}")
+#     else:
+#         observer_id = None
+#         print("No observer found")
+    
+#     if not observer_id:
+#         return dict(species_list=[])
+    
+#     # Construct the query with additional debugging
+#     query = (db.sightings.sampling_event_identifier == db.checklists.sampling_event_identifier) & \
+#             (db.checklists.observer_id == observer_id) & \
+#             (db.sightings.common_name == db.species.common_name)
+#     print(f"Query: {query}")
+    
+#     species_seen = db(query).select(db.species.ALL, distinct=True, orderby=db.checklists.observation_date)
+#     species_list = [species.common_name for species in species_seen]
+    
+#     print("Species List:", species_list) 
+#     if order == "first":
+#         species_list.reverse() 
+    
+#     return dict(species_list=species_list)
+
+
 
 @action('get_species_details/<species_name>')
 @action.uses(db, auth.user)
