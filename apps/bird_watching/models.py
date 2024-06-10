@@ -45,6 +45,10 @@ db.define_table(
     Field('bird_count', 'integer')
 )
 
+db.define_table('observers', 
+                Field('observer_id'),
+                Field('user_email'))
+
 def safe_int(value, default=0):
     try:
         return int(value)
@@ -86,7 +90,6 @@ if db(db.checklists).isempty():
                 observer_id=safe_int(row[5]),
                 duration_minute=safe_int(row[6]) 
             )
-
 # Always commit your models to avoid problems later
 db.commit()
 
