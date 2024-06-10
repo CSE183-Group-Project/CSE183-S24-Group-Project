@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <title>Bird Stats</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.0/css/bulma.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.0/css/bulma.min.css">
     <script src="https://d3js.org/d3.v4.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
@@ -16,59 +13,56 @@
         display: none;
       }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="section" id="app" v-cloak>
-      <h1 class="title"><i class="fa-solid fa-cube"></i> Bird Stats</h1>
-      <nav>
-        <button class="button" @click="getStat">Stats</button>
-        <button class="button" @click="getTrend">Trends</button>
-      </nav>
-      <div>
-        <input
-          type="text"
-          v-model="search_query"
-          placeholder="Search species"
-        />
-        <button class="button" @click="searchSpecies">Search</button>
-      </div>
-      <div class="is-flex is-flex-direction-row">
-        <div id="my_dataviz"></div>
-        <div :class="{'is-hidden' : selected_species.length == 0}">
-          <div class="is-flex is-flex-direction-column">
-            <h3>Species: {{selected_species}}</h3>
-            <ul>
-              <template v-for="bird in details">
-                <li>{{bird.location}}</li>
-              </template>
-            </ul>
-          </div>
+        <h1 class="title"><i class="fa-solid fa-cube"></i> Bird Stats</h1>
+        <nav>
+            <button class="button" @click="getStat">Stats</button>
+            <button class="button" @click="getTrend">Trends</button>
+        </nav>
+        <div>
+            <input type="text" v-model="search_query" placeholder="Search species">
+            <button class="button" @click="searchSpecies">Search</button>
         </div>
-      </div>
-      <div :class="{'is-hidden' : search_query.length > 0}">
-        <button class="button" @click="getStat('recent')">Recently Seen</button>
-        <button class="button" @click="getStat('first')">First Seen</button>
-      </div>
-      <ol :class="{'is-hidden' : search_query.length > 0}">
-        <template v-for="bird in stats">
-          <li @click="getSpeciesDetails(bird)">{{bird}}</li>
-        </template>
-      </ol>
-      <div :class="{'is-hidden' : search_query.length == 0}">
-        <h3>Search Results:</h3>
-        <ol>
-          <template v-for="bird in search_results">
-            <li @click="getSpeciesDetails(bird)">{{bird}}</li>
-          </template>
+        <div class="is-flex is-flex-direction-row">
+            <div id="my_dataviz"></div>
+            <div :class="{'is-hidden' : selected_species.length == 0}">
+                <div class="is-flex is-flex-direction-column">
+                    <h3>Species: {{selected_species}}</h3>
+                    <ul>
+                        <template v-for="bird in details">
+                            <li>{{bird.location}}</li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div :class="{'is-hidden' : search_query.length > 0}">
+            <button class="button" @click="getStat('recent')">Recently Seen</button>
+            <button class="button" @click="getStat('first')">First Seen</button>
+        </div>
+        <ol :class="{'is-hidden' : search_query.length > 0}">
+            <template v-for="bird in stats">
+                <li @click="getSpeciesDetails(bird)">{{bird}}</li>
+            </template>
         </ol>
-      </div>
+        <div :class="{'is-hidden' : search_query.length == 0}">
+            <h3>Search Results:</h3>
+            <ol>
+                <template v-for="bird in search_results">
+                    <li @click="getSpeciesDetails(bird)">{{bird}}</li>
+                </template>
+            </ol>
+        </div>
     </div>
     <script>
-      const get_stats_url = "{{=URL('get_stats')}}";
-      const get_species_details_url = "{{=URL('get_species_details')}}";
-      const get_trends_url = "{{=URL('get_trends')}}";
-      const search_species_url = "{{=URL('search_species')}}";
+      window.get_stats_url = "{{=URL('get_stats')}}";
+      window.get_species_details_url = "{{=URL('get_species_details')}}";
+      window.get_trends_url = "{{=URL('get_trends')}}";
+      window.search_species_url = "{{=URL('search_species')}}";
     </script>
-    <script src="/static/js/stats.js"></script>
-  </body>
+    <script src="/bird_watching/static/js/stats.js"></script>
+</body>
 </html>
+<!-- Path: apps/bird_watching/static/js/stats.js -->
