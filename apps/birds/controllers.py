@@ -36,7 +36,7 @@ url_signer = URLSigner(session)
 
 @action('stats')
 @action.uses('stats.html', db, auth, url_signer)
-def index():
+def stats():
     return dict(
         # COMPLETE: return here any signed URLs you need.
         get_stats_url = URL('get_stats'),
