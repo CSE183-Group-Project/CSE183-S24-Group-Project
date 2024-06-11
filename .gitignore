@@ -5,3 +5,5 @@ databases/*.db
 !databases/README.md
 apps/bird_watching/databases/
 apps/bird_watching/databases/*.db
+apps/.service
+apps/__pycache__
